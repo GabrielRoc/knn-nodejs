@@ -5,7 +5,27 @@ const {
     table
 } = require('console');
 
-const classes = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+const classes = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+var melhorCaso = {
+    taxaAcerto: 0,
+    k: null,
+    porcetagemTreinamento: null,
+    formulaDistancia: null,
+    inicio: null,
+    fim: null,
+    matriz: []
+};
+
+var piorCaso = {
+    taxaAcerto: 100,
+    k: null,
+    porcetagemTreinamento: null,
+    formulaDistancia: null,
+    inicio: null,
+    fim: null,
+    matriz: []
+};
 
 async function lerArquivo(caminho) {
     var array = []
@@ -20,7 +40,7 @@ async function lerArquivo(caminho) {
     var index = 0;
 
     for await (const line of rl) {
-        array[index] = {}
+        array[index] = {};
         array[index].data = _.split(line, ' ');
         array[index].def = array[index].data[array[index].data.length - 1];
         array[index].data.pop();
@@ -90,7 +110,6 @@ function classificarAmostra(treinamento, ind, k, calcDistancia) {
 
     return classes[maior];
 }
-
 async function exec(k, treinamento, calcDistancia) {
 
     var classificacao = [
@@ -133,17 +152,57 @@ async function exec(k, treinamento, calcDistancia) {
     console.log('\n', 'K:', k, 'Treinamento:', treinamento + '%', 'Distância:', calcDistancia);
     console.table(classificacao);
     console.log('Acerto:', (acertos / qntTestes * 100).toFixed(3) + '%', 'Início:', inicio.toLocaleTimeString('pt-BR'), 'Fim:', fim.toLocaleTimeString('pt-BR'), 'Execução:', (fim - inicio) + 'ms');
+
+    if ((acertos / qntTestes * 100) > melhorCaso.taxaAcerto) {
+        melhorCaso.taxaAcerto = (acertos / qntTestes * 100);
+        melhorCaso.k = k;
+        melhorCaso.porcetagemTreinamento = treinamento;
+        melhorCaso.formulaDistancia = calcDistancia;
+        melhorCaso.matriz = classificacao;
+        melhorCaso.inicio = inicio;
+        melhorCaso.fim = fim;
+    }
+
+    if ((acertos / qntTestes * 100) < piorCaso.taxaAcerto) {
+        piorCaso.taxaAcerto = (acertos / qntTestes * 100);
+        piorCaso.k = k;
+        piorCaso.porcetagemTreinamento = treinamento;
+        piorCaso.formulaDistancia = calcDistancia;
+        piorCaso.matriz = classificacao
+        piorCaso.inicio = inicio;
+        piorCaso.fim = fim;
+    }
 }
 
-function main() {
-    k = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
+function imprimirMelhorPiorCaso(flag) {
+    if (flag == true) {
+        console.log('\n', 'Melhor Caso');
+        console.log('K:', melhorCaso.k, 'Treinamento:', melhorCaso.porcetagemTreinamento + '%', 'Distância:', melhorCaso.formulaDistancia);
+        console.table(melhorCaso.matriz);
+        console.log('Acerto:', melhorCaso.taxaAcerto.toFixed(3) + '%', 'Início:', melhorCaso.inicio.toLocaleTimeString('pt-BR'), 'Fim:', melhorCaso.fim.toLocaleTimeString('pt-BR'), 'Execução:', (melhorCaso.fim - melhorCaso.inicio) + 'ms');
 
+        console.log('\n', 'Pior Caso');
+        console.log('K:', piorCaso.k, 'Treinamento:', piorCaso.porcetagemTreinamento + '%', 'Distância:', piorCaso.formulaDistancia);
+        console.table(piorCaso.matriz);
+        console.log('Acerto:', piorCaso.taxaAcerto.toFixed(3) + '%', 'Início:', piorCaso.inicio.toLocaleTimeString('pt-BR'), 'Fim:', piorCaso.fim.toLocaleTimeString('pt-BR'), 'Execução:', (piorCaso.fim - piorCaso.inicio) + 'ms');
+    }
+}
+
+async function executar() {
+    k = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
     for (var x = 0; x < k.length; x++) {
         for (var i = 25; i < 101; i *= 2) {
             exec(k[x], i, distanciaManhattan);
             exec(k[x], i, distanciaEuclediana);
         }
     }
+
+    return true
 }
 
+async function main() {
+
+    imprimirMelhorPiorCaso(executar());
+
+}
 main();
