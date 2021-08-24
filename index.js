@@ -7,7 +7,7 @@ const {
 
 const classes = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-var melhorCaso = {
+/*var melhorCaso = {
     taxaAcerto: 0,
     k: null,
     porcetagemTreinamento: null,
@@ -25,7 +25,7 @@ var piorCaso = {
     inicio: null,
     fim: null,
     matriz: []
-};
+};*/
 
 async function lerArquivo(caminho) {
     var array = []
@@ -153,7 +153,7 @@ async function exec(k, treinamento, calcDistancia) {
     console.table(classificacao);
     console.log('Acerto:', (acertos / qntTestes * 100).toFixed(3) + '%', 'Início:', inicio.toLocaleTimeString('pt-BR'), 'Fim:', fim.toLocaleTimeString('pt-BR'), 'Execução:', (fim - inicio) + 'ms');
 
-    if ((acertos / qntTestes * 100) > melhorCaso.taxaAcerto) {
+    /*if ((acertos / qntTestes * 100) > melhorCaso.taxaAcerto) {
         melhorCaso.taxaAcerto = (acertos / qntTestes * 100);
         melhorCaso.k = k;
         melhorCaso.porcetagemTreinamento = treinamento;
@@ -171,10 +171,10 @@ async function exec(k, treinamento, calcDistancia) {
         piorCaso.matriz = classificacao
         piorCaso.inicio = inicio;
         piorCaso.fim = fim;
-    }
+    }*/
 }
 
-function imprimirMelhorPiorCaso(flag) {
+/*function imprimirMelhorPiorCaso(flag) {
     if (flag == true) {
         console.log('\n', 'Melhor Caso');
         console.log('K:', melhorCaso.k, 'Treinamento:', melhorCaso.porcetagemTreinamento + '%', 'Distância:', melhorCaso.formulaDistancia);
@@ -186,7 +186,7 @@ function imprimirMelhorPiorCaso(flag) {
         console.table(piorCaso.matriz);
         console.log('Acerto:', piorCaso.taxaAcerto.toFixed(3) + '%', 'Início:', piorCaso.inicio.toLocaleTimeString('pt-BR'), 'Fim:', piorCaso.fim.toLocaleTimeString('pt-BR'), 'Execução:', (piorCaso.fim - piorCaso.inicio) + 'ms');
     }
-}
+}*/
 
 async function executar() {
     k = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
@@ -202,7 +202,7 @@ async function executar() {
 
 async function main() {
 
-    imprimirMelhorPiorCaso(executar());
+    executar();
 
 }
 main();
